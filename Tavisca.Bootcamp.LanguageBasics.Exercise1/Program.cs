@@ -1,4 +1,5 @@
 using System;
+
 using System.Text.RegularExpressions;
 
 namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
@@ -12,6 +13,14 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
             Test("42*?7=1974", 4);
             Test("42*?47=1974", -1);
             Test("2*12?=247", -1);
+
+            //If user wants to test new data or equation
+            Console.WriteLine("Enter Equation in the Form of 'A*B=C' With One '?' at Any Numeric Position");
+            string eqn = Console.ReadLine();
+            Console.WriteLine("Enter Result Value of '?' in The Above Equation");
+            int num = Convert.ToInt32(Console.ReadLine());
+            Test(eqn, num);
+            
             Console.ReadKey(true);
         }
 
@@ -27,17 +36,41 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
             {
                 equation = equation.Replace('*', '=');
                 string[] eqArr = Regex.Split(equation, "=");
-                if (eqArr[0].Contains("?"))
+                string a = eqArr[0];
+                string b = eqArr[1];
+                string c = eqArr[2];
+                int result = 0;
+                if (a.Contains("?"))
                 {
-                    return findAns(eqArr[2], eqArr[1], eqArr[0], "/");
-                }
-                else if (eqArr[1].Contains("?"))
+                    result = int.Parse(c) / int.Parse(b);
+                    if (int.Parse(c) % int.Parse(b) !=0 || a.Length != result.ToString().Length)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        char result_string = ((int)result).ToString()[a.IndexOf('?')];
+                        return int.Parse(result_string.ToString());
+                    }
+                 }
+                else if (b.Contains("?"))
                 {
-                    return findAns(eqArr[2], eqArr[0], eqArr[1], "/");
+                    result = int.Parse(c) / int.Parse(a);
+                    if (int.Parse(c) % int.Parse(a) != 0 || b.Length!=result.ToString().Length)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        char result_string = ((int)result).ToString()[b.IndexOf('?')];
+                        return int.Parse(result_string.ToString());
+                    }
                 }
                 else
                 {
-                    return findAns(eqArr[0], eqArr[1], eqArr[2], "*");
+                    result = int.Parse(a) * int.Parse(b);
+                    char result_string = ((int)result).ToString()[c.IndexOf('?')];
+                    return int.Parse(result_string.ToString());
                 }
             }
             catch (Exception e)
@@ -45,30 +78,6 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
                 Console.Write(e);
                 throw new NotImplementedException();
             }
-        }
-
-        public static int findAns(string equation1, string equation2, string equation3, string operation)
-        {
-            int result = 0;
-            switch (operation)
-            {
-                case "/":
-                    result = int.Parse(equation1) / int.Parse(equation2);
-                    if (int.Parse(equation1) % int.Parse(equation2) != 0 || equation3.Contains(result.ToString()))
-                    {
-                        return -1;
-                    }
-                    break;
-
-                case "*":
-                    result = int.Parse(equation1) * int.Parse(equation2);
-                    break;
-
-                default: return -1;
-
-            }
-            char result_string = ((int)result).ToString()[equation3.IndexOf('?')];
-            return int.Parse(result_string.ToString());
         }
     }
 }
